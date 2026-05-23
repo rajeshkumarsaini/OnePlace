@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ChevronDown, ArrowRight, Zap } from "lucide-react";
 
-const menus = [
+type Item = { label: string; description: string; href: string };
+type Menu = { label: string; cols: number; items: Item[] };
+
+const menus: Menu[] = [
   {
     label: "Product",
-    columns: 2,
+    cols: 2,
     items: [
       {
         label: "Overview",
@@ -37,12 +40,12 @@ const menus = [
   },
   {
     label: "Approach",
-    columns: 1,
+    cols: 3,
     items: [
       {
         label: "Context Engineering",
         description:
-          "Structure domain expertise into reusable context your agents can reason over — not just retrieve.",
+          "Structure domain expertise into reusable context your agents can reason over — not just retrieve from a vector store.",
         href: "/approach/context-engineering",
       },
       {
@@ -54,67 +57,67 @@ const menus = [
       {
         label: "Governance",
         description:
-          "Every agent decision is explainable, auditable and traceable — meeting the bar set by financial regulators.",
+          "Every agent decision is explainable, auditable and traceable — meeting the standards set by financial regulators.",
         href: "/approach/governance",
       },
     ],
   },
   {
     label: "Solutions",
-    columns: 1,
+    cols: 3,
     items: [
       {
         label: "Lien Perfection",
         description:
-          "Automate lien search, collateral verification, UCC filing and real-time tracking across all 50 states.",
+          "Automate lien search, collateral verification, UCC filing and real-time perfection tracking across all 50 states.",
         href: "/solutions/lien-perfection",
       },
       {
         label: "Credit Line Management",
         description:
-          "Continuously monitor utilisation, covenants and risk signals to adjust credit lines dynamically.",
+          "Continuously monitor utilisation, covenants and risk signals to adjust revolving credit lines dynamically.",
         href: "/solutions/credit-line-management",
       },
       {
         label: "Small Business Relationship Agent",
         description:
-          "Identify growth opportunities, flag at-risk relationships and personalise outreach across your SMB portfolio.",
+          "Identify growth opportunities, flag at-risk relationships and personalise banker outreach across your SMB portfolio.",
         href: "/solutions/small-business-relationship-agent",
       },
     ],
   },
   {
     label: "Marketplace",
-    columns: 1,
+    cols: 3,
     items: [
       {
         label: "Data Products & Tools",
         description:
-          "Certified financial datasets, enrichment APIs and analytical tools curated for agentic use cases.",
+          "Certified financial datasets, enrichment APIs and analytical tools curated for agentic financial use cases.",
         href: "/marketplace/data-products",
       },
       {
         label: "Agents Library",
         description:
-          "Browse and deploy pre-built, domain-trained agents for lending, compliance, risk and operations.",
+          "Browse and deploy pre-built, domain-trained agents for lending, compliance, risk and banking operations.",
         href: "/marketplace/agents",
       },
       {
         label: "Connectors",
         description:
-          "Ready-made integrations with Salesforce, nCino, Finastra, Temenos, Snowflake and 50+ platforms.",
+          "Ready-made integrations with Salesforce, nCino, Finastra, Temenos, Snowflake and 50+ banking platforms.",
         href: "/marketplace/connectors",
       },
     ],
   },
   {
     label: "Resources",
-    columns: 1,
+    cols: 3,
     items: [
       {
         label: "Insights",
         description:
-          "Research papers, product perspectives and analysis from the OnePlace team and industry experts.",
+          "Research papers, product perspectives and original analysis from the OnePlace team and industry experts.",
         href: "/resources/insights",
       },
       {
@@ -126,89 +129,57 @@ const menus = [
       {
         label: "Documentation",
         description:
-          "Comprehensive API reference, how-to guides and architecture documentation for builders.",
+          "Comprehensive API reference, developer guides and architecture documentation for builders.",
         href: "/resources/documentation",
       },
     ],
   },
 ];
 
-type MenuItem = { label: string; description: string; href: string };
-
-function Dropdown({ items, columns }: { items: MenuItem[]; columns: number }) {
-  const isTwo = columns === 2;
-
-  return (
-    <div
-      className="absolute top-full left-0 pt-2 z-50"
-      style={{ minWidth: isTwo ? "560px" : "380px" }}
-    >
-      {/* Invisible bridge so mouse can travel from trigger to panel */}
-      <div className="absolute -top-2 left-0 right-0 h-2" />
-      <div
-        className="bg-white rounded-xl shadow-lg border border-gray-200/80 overflow-hidden"
-        style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.04)" }}
-      >
-        <div
-          className={`p-6 ${isTwo ? "grid grid-cols-2 gap-x-8 gap-y-1" : "flex flex-col gap-1"}`}
-        >
-          {items.map(({ label, description, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className="group block px-4 py-4 rounded-lg hover:bg-gray-50 transition-colors duration-150"
-            >
-              <div className="text-[14px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150 mb-1 leading-snug">
-                {label}
-              </div>
-              <div className="text-[13px] text-gray-500 leading-relaxed">
-                {description}
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Nav() {
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const navRef = useRef<HTMLElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const enter = (label: string) => {
+  const scheduleClose = useCallback(() => {
+    closeTimer.current = setTimeout(() => setOpen(null), 120);
+  }, []);
+
+  const cancelClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
-    setOpen(label);
-  };
+  }, []);
 
-  const leave = () => {
-    closeTimer.current = setTimeout(() => setOpen(null), 100);
-  };
+  const activeMenu = menus.find((m) => m.label === open) ?? null;
 
+  // Close on outside click
+  const headerRef = useRef<HTMLElement>(null);
   useEffect(() => {
-    const onClickOutside = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+    const handler = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
         setOpen(null);
         setMobileOpen(false);
       }
     };
-    document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   return (
     <header
-      className="sticky top-0 z-50 bg-white border-b border-gray-200"
-      ref={navRef}
+      ref={headerRef}
+      className="sticky top-0 z-50 bg-white border-b border-gray-200 relative"
     >
-      <div className="max-w-screen-xl mx-auto px-6 lg:px-10">
-        <div className="flex items-center h-[60px] gap-6">
+      {/* ── Nav bar ── */}
+      <div className="max-w-screen-xl mx-auto px-8 xl:px-12">
+        <div className="flex items-center h-[64px] gap-2">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 mr-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 shrink-0 mr-6"
+            onClick={() => setOpen(null)}
+          >
             <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
               <Zap className="w-[15px] h-[15px] text-white" strokeWidth={2.5} />
             </div>
@@ -217,41 +188,44 @@ export default function Nav() {
             </span>
           </Link>
 
-          {/* Desktop nav items */}
+          {/* Desktop menu triggers */}
           <nav className="hidden lg:flex items-center gap-0.5 flex-1">
             {menus.map((menu) => (
-              <div
+              <button
                 key={menu.label}
-                className="relative"
-                onMouseEnter={() => enter(menu.label)}
-                onMouseLeave={leave}
+                onMouseEnter={() => { cancelClose(); setOpen(menu.label); }}
+                onMouseLeave={scheduleClose}
+                className={`flex items-center gap-1 px-3.5 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 select-none ${
+                  open === menu.label
+                    ? "text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
               >
-                <button
-                  className={`flex items-center gap-1 px-3 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 ${
+                {menu.label}
+                <ChevronDown
+                  className={`w-[14px] h-[14px] transition-transform duration-200 ${
                     open === menu.label
-                      ? "text-gray-900"
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "rotate-180 text-gray-600"
+                      : "text-gray-400"
                   }`}
-                >
-                  {menu.label}
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
-                      open === menu.label ? "rotate-180 text-gray-600" : ""
-                    }`}
-                  />
-                </button>
-                {open === menu.label && (
-                  <Dropdown items={menu.items} columns={menu.columns} />
-                )}
-              </div>
+                />
+              </button>
             ))}
           </nav>
 
           {/* Sandbox CTA */}
-          <div className="hidden lg:flex items-center ml-auto shrink-0">
+          <div className="hidden lg:flex items-center ml-auto shrink-0 gap-4">
+            <Link
+              href="#"
+              className="text-[14px] font-medium text-gray-500 hover:text-gray-900 transition-colors"
+              onClick={() => setOpen(null)}
+            >
+              Sign in
+            </Link>
             <Link
               href="/sandbox"
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white text-[13px] font-semibold hover:bg-blue-700 transition-colors duration-150"
+              onClick={() => setOpen(null)}
             >
               OnePlace Sandbox
               <ArrowRight className="w-3.5 h-3.5" />
@@ -260,35 +234,73 @@ export default function Nav() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden ml-auto p-2 rounded-md hover:bg-gray-50"
+            className="lg:hidden ml-auto p-2"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
             <span className="flex flex-col gap-[5px]">
-              <span
-                className={`block w-[18px] h-[1.5px] bg-gray-700 transition-all duration-200 origin-center ${
-                  mobileOpen ? "rotate-45 translate-y-[6.5px]" : ""
-                }`}
-              />
-              <span
-                className={`block w-[18px] h-[1.5px] bg-gray-700 transition-all duration-200 ${
-                  mobileOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`block w-[18px] h-[1.5px] bg-gray-700 transition-all duration-200 origin-center ${
-                  mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : ""
-                }`}
-              />
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={`block w-[18px] h-[1.5px] bg-gray-700 transition-all duration-200 origin-center ${
+                    mobileOpen && i === 0
+                      ? "rotate-45 translate-y-[6.5px]"
+                      : mobileOpen && i === 1
+                      ? "opacity-0"
+                      : mobileOpen && i === 2
+                      ? "-rotate-45 -translate-y-[6.5px]"
+                      : ""
+                  }`}
+                />
+              ))}
             </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile panel */}
+      {/* ── Full-width mega menu panel ── */}
+      {open && activeMenu && (
+        <div
+          className="absolute top-full left-0 right-0 bg-white border-t border-gray-100"
+          style={{ boxShadow: "0 16px 40px -8px rgba(0,0,0,0.12)" }}
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+        >
+          <div className="max-w-screen-xl mx-auto px-8 xl:px-12 py-12">
+            {/* Items grid */}
+            <div
+              className="grid gap-x-16 gap-y-10"
+              style={{
+                gridTemplateColumns: `repeat(${activeMenu.cols}, minmax(0, 1fr))`,
+              }}
+            >
+              {activeMenu.items.map(({ label, description, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={() => setOpen(null)}
+                  className="group block"
+                >
+                  <div className="flex items-center gap-1.5 mb-2.5">
+                    <span className="text-[15px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150 leading-snug">
+                      {label}
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-x-1 group-hover:translate-x-0" />
+                  </div>
+                  <p className="text-[13.5px] text-gray-500 leading-relaxed">
+                    {description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Mobile panel ── */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
-          <div className="max-w-screen-xl mx-auto px-6 py-3">
+          <div className="px-6 py-3">
             {menus.map((menu) => (
               <div key={menu.label} className="border-b border-gray-100 last:border-0">
                 <button
@@ -297,7 +309,7 @@ export default function Nav() {
                       v === menu.label ? null : menu.label
                     )
                   }
-                  className="w-full flex items-center justify-between py-3.5 text-[14px] font-medium text-gray-700"
+                  className="w-full flex items-center justify-between py-4 text-[14px] font-medium text-gray-700"
                 >
                   {menu.label}
                   <ChevronDown
@@ -307,15 +319,15 @@ export default function Nav() {
                   />
                 </button>
                 {mobileExpanded === menu.label && (
-                  <div className="pb-4 space-y-1">
+                  <div className="pb-5 space-y-5">
                     {menu.items.map(({ label, description, href }) => (
                       <Link
                         key={label}
                         href={href}
                         onClick={() => setMobileOpen(false)}
-                        className="block px-3 py-3 rounded-lg hover:bg-gray-50"
+                        className="block group"
                       >
-                        <div className="text-[13px] font-semibold text-gray-900 mb-0.5">
+                        <div className="text-[14px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">
                           {label}
                         </div>
                         <div className="text-[12px] text-gray-500 leading-relaxed">
@@ -327,7 +339,7 @@ export default function Nav() {
                 )}
               </div>
             ))}
-            <div className="py-4">
+            <div className="py-5 flex flex-col gap-3">
               <Link
                 href="/sandbox"
                 onClick={() => setMobileOpen(false)}
