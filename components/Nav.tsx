@@ -189,13 +189,13 @@ export default function Nav() {
           </Link>
 
           {/* Desktop menu triggers */}
-          <nav className="hidden lg:flex items-center gap-0.5 flex-1">
+          <nav className="hidden lg:flex items-center gap-1 flex-1">
             {menus.map((menu) => (
               <button
                 key={menu.label}
                 onMouseEnter={() => { cancelClose(); setOpen(menu.label); }}
                 onMouseLeave={scheduleClose}
-                className={`flex items-center gap-1 px-3.5 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 select-none ${
+                className={`flex items-center gap-1 px-5 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 select-none ${
                   open === menu.label
                     ? "text-gray-900"
                     : "text-gray-500 hover:text-gray-900"
@@ -266,23 +266,22 @@ export default function Nav() {
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
         >
-          <div className="max-w-screen-xl mx-auto px-8 xl:px-12 py-12">
-            {/* Items grid */}
-            <div
-              className="grid gap-x-16 gap-y-10"
-              style={{
-                gridTemplateColumns: `repeat(${activeMenu.cols}, minmax(0, 1fr))`,
-              }}
-            >
-              {activeMenu.items.map(({ label, description, href }) => (
+          <div className="max-w-screen-xl mx-auto px-8 xl:px-12 py-10">
+            {/* Items stacked vertically */}
+            <div className="flex flex-col max-w-lg">
+              {activeMenu.items.map(({ label, description, href }, idx) => (
                 <Link
                   key={label}
                   href={href}
                   onClick={() => setOpen(null)}
-                  className="group block"
+                  className={`group block py-5 ${
+                    idx !== activeMenu.items.length - 1
+                      ? "border-b border-gray-100"
+                      : ""
+                  }`}
                 >
-                  <div className="flex items-center gap-1.5 mb-2.5">
-                    <span className="text-[15px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150 leading-snug">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="text-[15px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150">
                       {label}
                     </span>
                     <ArrowRight className="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-x-1 group-hover:translate-x-0" />
