@@ -30,7 +30,7 @@ export default function CTA() {
   };
 
   return (
-    <section id="contact" className="relative py-24 md:py-32 overflow-hidden">
+    <section id="contact" className="relative py-32 lg:py-44 overflow-hidden">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#060E1A] via-[#0A1E4A] to-[#060E1A]" />
       <div className="absolute inset-0 pointer-events-none">
@@ -40,7 +40,7 @@ export default function CTA() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left: Copy */}
           <div className="space-y-6">
             <div className="badge w-fit">Ready to Get Started</div>
@@ -86,7 +86,7 @@ export default function CTA() {
           </div>
 
           {/* Right: Form */}
-          <div className="glass rounded-2xl p-8 border border-blue-900/40 shadow-2xl shadow-blue-950/30">
+          <div className="glass rounded-2xl p-10 border border-blue-900/40 shadow-2xl shadow-blue-950/30">
             {submitted ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto mb-4">
@@ -180,7 +180,7 @@ export default function CTA() {
         </div>
 
         {/* Alternative: large CTA button */}
-        <div className="mt-16 text-center">
+        <div className="mt-24 text-center">
           <div className="divider mb-8" />
           <p className="text-slate-500 text-sm mb-4">Prefer to talk now?</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

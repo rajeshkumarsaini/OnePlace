@@ -148,7 +148,7 @@ export default function UseCases() {
   const [activeTab, setActiveTab] = useState("retail");
 
   return (
-    <section id="use-cases" className="py-24 md:py-32 bg-[#060E1A] relative overflow-hidden">
+    <section id="use-cases" className="py-32 lg:py-44 bg-[#060E1A] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-900/10 rounded-full blur-3xl" />
@@ -157,8 +157,8 @@ export default function UseCases() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="badge mb-4 mx-auto w-fit">Industry Solutions</div>
+        <div className="text-center mb-20">
+          <div className="badge mb-6 mx-auto w-fit">Industry Solutions</div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4">
             Built for{" "}
             <span className="text-gradient">Every Financial Vertical</span>
@@ -169,7 +169,7 @@ export default function UseCases() {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-2 justify-center mb-10">
+        <div className="flex flex-wrap gap-3 justify-center mb-14">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -187,11 +187,11 @@ export default function UseCases() {
         </div>
 
         {/* Use case cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {useCases[activeTab].map((uc, i) => (
             <div
               key={uc.title}
-              className="glass rounded-2xl p-6 border border-blue-900/30 card-hover group flex flex-col"
+              className="glass rounded-2xl p-8 border border-blue-900/30 card-hover group flex flex-col"
             >
               <div className="text-3xl mb-4">{uc.icon}</div>
 

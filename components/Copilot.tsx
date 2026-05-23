@@ -63,7 +63,7 @@ const conversation = [
 
 export default function Copilot() {
   return (
-    <section id="copilot" className="py-24 md:py-32 bg-[#0A1628] relative overflow-hidden">
+    <section id="copilot" className="py-32 lg:py-44 bg-[#0A1628] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 grid-pattern opacity-30" />
@@ -72,8 +72,8 @@ export default function Copilot() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge mb-4 mx-auto w-fit">
+        <div className="text-center mb-24">
+          <div className="badge mb-6 mx-auto w-fit">
             <Bot className="w-3 h-3" />
             AI Copilot
           </div>
@@ -86,12 +86,12 @@ export default function Copilot() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left: Feature list */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {features.map((feature) => (
-              <div key={feature.title} className="flex gap-4 group">
-                <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-600/30 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 transition-colors duration-200">
+              <div key={feature.title} className="flex gap-5 group">
+                <div className="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-600/30 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 transition-colors duration-200">
                   <feature.icon className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>

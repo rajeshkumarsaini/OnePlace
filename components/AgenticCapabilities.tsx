@@ -100,7 +100,7 @@ const colorMap: Record<string, { bg: string; border: string; text: string; badge
 
 export default function AgenticCapabilities() {
   return (
-    <section id="agents" className="py-24 md:py-32 bg-[#060E1A] relative overflow-hidden">
+    <section id="agents" className="py-32 lg:py-44 bg-[#060E1A] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
@@ -109,8 +109,8 @@ export default function AgenticCapabilities() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge mb-4 mx-auto w-fit">
+        <div className="text-center mb-24">
+          <div className="badge mb-6 mx-auto w-fit">
             <Zap className="w-3 h-3" />
             AI Agents
           </div>
@@ -124,13 +124,13 @@ export default function AgenticCapabilities() {
         </div>
 
         {/* Agents grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {agents.map((agent) => {
             const colors = colorMap[agent.color];
             return (
               <div
                 key={agent.name}
-                className="glass rounded-2xl p-6 border border-blue-900/30 card-hover group relative overflow-hidden"
+                className="glass rounded-2xl p-8 border border-blue-900/30 card-hover group relative overflow-hidden"
               >
                 {/* Hover glow */}
                 <div
@@ -181,7 +181,7 @@ export default function AgenticCapabilities() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-20 text-center">
           <p className="text-slate-400 text-sm mb-4">
             Need a custom agent for your specific workflow?
           </p>

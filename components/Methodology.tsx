@@ -43,7 +43,7 @@ const steps = [
 
 export default function Methodology() {
   return (
-    <section id="platform" className="py-24 bg-[#0A1628] relative overflow-hidden">
+    <section id="platform" className="py-32 lg:py-44 bg-[#0A1628] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-900/10 rounded-full blur-3xl" />
@@ -51,8 +51,8 @@ export default function Methodology() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge mb-4 mx-auto w-fit">
+        <div className="text-center mb-24">
+          <div className="badge mb-6 mx-auto w-fit">
             <CheckSquare className="w-3 h-3" />
             Our Methodology
           </div>
@@ -67,7 +67,7 @@ export default function Methodology() {
         </div>
 
         {/* Flow diagram header */}
-        <div className="flex items-center justify-center gap-2 mb-12 overflow-x-auto pb-2">
+        <div className="flex items-center justify-center gap-2 mb-16 overflow-x-auto pb-2">
           {[
             { label: "Business Outcomes", short: "Outcomes" },
             { label: "KPIs", short: "KPIs" },
@@ -94,11 +94,11 @@ export default function Methodology() {
         </div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-8">
           {steps.map(({ number, icon: Icon, title, color, description, examples }) => (
             <div
               key={title}
-              className="glass rounded-2xl p-6 card-hover border border-blue-900/20 hover:border-blue-700/30 transition-colors duration-300"
+              className="glass rounded-2xl p-8 card-hover border border-blue-900/20 hover:border-blue-700/30 transition-colors duration-300"
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
@@ -157,7 +157,7 @@ export default function Methodology() {
         </div>
 
         {/* Bottom callout */}
-        <div className="mt-12 glass rounded-2xl p-8 border border-emerald-900/30 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mt-16 glass rounded-2xl p-10 border border-emerald-900/30 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-xl font-bold text-white mb-2">
               Typical time-to-value: <span className="text-emerald-400">6–8 weeks</span>

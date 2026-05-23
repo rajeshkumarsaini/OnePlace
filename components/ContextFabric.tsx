@@ -35,7 +35,7 @@ const experts = [
 
 export default function ContextFabric() {
   return (
-    <section id="context-fabric" className="py-24 bg-[#060E1A] relative overflow-hidden">
+    <section id="context-fabric" className="py-32 lg:py-44 bg-[#060E1A] relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-30">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
@@ -44,8 +44,8 @@ export default function ContextFabric() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge mb-4 mx-auto w-fit">
+        <div className="text-center mb-24">
+          <div className="badge mb-6 mx-auto w-fit">
             <BookOpen className="w-3 h-3" />
             Domain Intelligence Layer
           </div>
@@ -60,7 +60,7 @@ export default function ContextFabric() {
         </div>
 
         {/* Expert contributors bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
           {experts.map(({ role, count }) => (
             <div key={role} className="glass rounded-xl p-4 text-center card-hover">
               <div className="text-3xl font-black text-gradient-blue mb-1">{count}+</div>
@@ -70,9 +70,9 @@ export default function ContextFabric() {
         </div>
 
         {/* Fabric diagram */}
-        <div className="relative mb-16">
+        <div className="relative mb-20">
           {/* Fabric visual — layered mesh */}
-          <div className="flex items-center justify-center mb-12">
+          <div className="flex items-center justify-center mb-16">
             <svg viewBox="0 0 800 200" className="w-full max-w-3xl h-32 opacity-60" xmlns="http://www.w3.org/2000/svg">
               {/* Layer lines */}
               {[0, 1, 2, 3, 4].map((i) => (
@@ -121,11 +121,11 @@ export default function ContextFabric() {
           </div>
 
           {/* Three columns */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {layers.map(({ icon: Icon, title, color, description, items }) => (
               <div
                 key={title}
-                className={`glass rounded-2xl p-6 card-hover border ${
+                className={`glass rounded-2xl p-8 card-hover border ${
                   color === "blue"
                     ? "border-blue-800/30 hover:border-blue-600/50"
                     : color === "emerald"
@@ -176,7 +176,7 @@ export default function ContextFabric() {
         </div>
 
         {/* Quote */}
-        <div className="glass rounded-2xl p-8 border border-blue-900/30 text-center">
+        <div className="glass rounded-2xl p-12 border border-blue-900/30 text-center">
           <blockquote className="text-lg text-slate-300 italic leading-relaxed mb-4">
             &ldquo;OnePlace&apos;s Context Fabric is the first platform we&apos;ve used that actually understands
             the nuances of Basel IV capital calculations without needing us to explain the underlying

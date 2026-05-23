@@ -47,7 +47,7 @@ const colorMap: Record<string, { bg: string; border: string; text: string; badge
 
 export default function TrustSecurity() {
   return (
-    <section id="security" className="py-24 md:py-32 bg-[#0A1628] relative overflow-hidden">
+    <section id="security" className="py-32 lg:py-44 bg-[#0A1628] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 grid-pattern opacity-20" />
@@ -56,8 +56,8 @@ export default function TrustSecurity() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge mb-4 mx-auto w-fit">
+        <div className="text-center mb-24">
+          <div className="badge mb-6 mx-auto w-fit">
             <ShieldCheck className="w-3 h-3" />
             Security & Compliance
           </div>
@@ -71,11 +71,11 @@ export default function TrustSecurity() {
         </div>
 
         {/* Four pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
           {pillars.map((pillar) => {
             const c = colorMap[pillar.color];
             return (
-              <div key={pillar.title} className="glass rounded-2xl p-6 border border-blue-900/30 card-hover group text-center">
+              <div key={pillar.title} className="glass rounded-2xl p-8 border border-blue-900/30 card-hover group text-center">
                 <div className={`w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-4 ${c.bg} border ${c.border} group-hover:scale-110 transition-transform duration-300`}>
                   <pillar.icon className={`w-7 h-7 ${c.text}`} />
                 </div>
@@ -87,7 +87,7 @@ export default function TrustSecurity() {
         </div>
 
         {/* Certifications */}
-        <div className="glass rounded-2xl p-8 border border-blue-900/30">
+        <div className="glass rounded-2xl p-12 border border-blue-900/30">
           <div className="flex items-center gap-2 mb-6">
             <Globe className="w-5 h-5 text-blue-400" />
             <h3 className="text-lg font-bold text-white">Certifications & Compliance</h3>
