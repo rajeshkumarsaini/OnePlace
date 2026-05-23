@@ -5,12 +5,11 @@ import Link from "next/link";
 import { ChevronDown, ArrowRight, Zap } from "lucide-react";
 
 type Item = { label: string; description: string; href: string };
-type Menu = { label: string; cols: number; items: Item[] };
+type Menu = { label: string; items: Item[] };
 
 const menus: Menu[] = [
   {
     label: "Product",
-    cols: 2,
     items: [
       {
         label: "Overview",
@@ -40,7 +39,6 @@ const menus: Menu[] = [
   },
   {
     label: "Approach",
-    cols: 3,
     items: [
       {
         label: "Context Engineering",
@@ -64,7 +62,6 @@ const menus: Menu[] = [
   },
   {
     label: "Solutions",
-    cols: 3,
     items: [
       {
         label: "Lien Perfection",
@@ -88,7 +85,6 @@ const menus: Menu[] = [
   },
   {
     label: "Marketplace",
-    cols: 3,
     items: [
       {
         label: "Data Products & Tools",
@@ -112,7 +108,6 @@ const menus: Menu[] = [
   },
   {
     label: "Resources",
-    cols: 3,
     items: [
       {
         label: "Insights",
@@ -141,19 +136,16 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   const scheduleClose = useCallback(() => {
-    closeTimer.current = setTimeout(() => setOpen(null), 120);
+    closeTimer.current = setTimeout(() => setOpen(null), 150);
   }, []);
 
   const cancelClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   }, []);
 
-  const activeMenu = menus.find((m) => m.label === open) ?? null;
-
-  // Close on outside click
-  const headerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
@@ -168,16 +160,15 @@ export default function Nav() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 bg-white border-b border-gray-200 relative"
+      className="sticky top-0 z-50 bg-white border-b border-gray-200"
     >
-      {/* ── Nav bar ── */}
       <div className="max-w-screen-xl mx-auto px-8 xl:px-12">
-        <div className="flex items-center h-[64px] gap-2">
+        <div className="relative flex items-center h-[64px]">
 
-          {/* Logo */}
+          {/* ── Logo ── */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 shrink-0 mr-6"
+            className="flex items-center gap-2.5 shrink-0"
             onClick={() => setOpen(null)}
           >
             <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
@@ -188,32 +179,75 @@ export default function Nav() {
             </span>
           </Link>
 
-          {/* Desktop menu triggers */}
-          <nav className="hidden lg:flex items-center gap-1 flex-1">
+          {/* ── Nav items — absolutely centered ── */}
+          <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
             {menus.map((menu) => (
-              <button
+              <div
                 key={menu.label}
+                className="relative"
                 onMouseEnter={() => { cancelClose(); setOpen(menu.label); }}
                 onMouseLeave={scheduleClose}
-                className={`flex items-center gap-1 px-5 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 select-none ${
-                  open === menu.label
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
               >
-                {menu.label}
-                <ChevronDown
-                  className={`w-[14px] h-[14px] transition-transform duration-200 ${
+                {/* Trigger button */}
+                <button
+                  className={`flex items-center gap-1 px-4 py-2 rounded-md text-[14px] font-medium transition-colors duration-150 select-none ${
                     open === menu.label
-                      ? "rotate-180 text-gray-600"
-                      : "text-gray-400"
+                      ? "text-gray-900"
+                      : "text-gray-500 hover:text-gray-900"
                   }`}
-                />
-              </button>
+                >
+                  {menu.label}
+                  <ChevronDown
+                    className={`w-[13px] h-[13px] transition-transform duration-200 ${
+                      open === menu.label
+                        ? "rotate-180 text-gray-700"
+                        : "text-gray-400"
+                    }`}
+                  />
+                </button>
+
+                {/* ── Per-item dropdown ── */}
+                {open === menu.label && (
+                  <div
+                    className="absolute top-full left-0 z-50 mt-1 w-[360px] bg-white rounded-xl border border-gray-200 overflow-hidden"
+                    style={{ boxShadow: "0 8px 30px -4px rgba(0,0,0,0.14), 0 2px 8px -2px rgba(0,0,0,0.06)" }}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={scheduleClose}
+                  >
+                    {/* Invisible mouse bridge */}
+                    <div className="absolute -top-2 left-0 right-0 h-2" />
+
+                    <div className="px-2 py-2">
+                      {menu.items.map(({ label, description, href }, idx) => (
+                        <Link
+                          key={label}
+                          href={href}
+                          onClick={() => setOpen(null)}
+                          className={`group block px-4 py-4 rounded-lg hover:bg-gray-50 transition-colors duration-150 ${
+                            idx < menu.items.length - 1
+                              ? "border-b border-gray-100"
+                              : ""
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <span className="text-[14px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150">
+                              {label}
+                            </span>
+                            <ArrowRight className="w-3 h-3 text-blue-500 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-150" />
+                          </div>
+                          <p className="text-[12.5px] text-gray-500 leading-relaxed">
+                            {description}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
-          {/* Sandbox CTA */}
+          {/* ── Right side CTA ── */}
           <div className="hidden lg:flex items-center ml-auto shrink-0 gap-4">
             <Link
               href="#"
@@ -232,7 +266,7 @@ export default function Nav() {
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* ── Mobile hamburger ── */}
           <button
             className="lg:hidden ml-auto p-2"
             onClick={() => setMobileOpen((v) => !v)}
@@ -243,70 +277,28 @@ export default function Nav() {
                 <span
                   key={i}
                   className={`block w-[18px] h-[1.5px] bg-gray-700 transition-all duration-200 origin-center ${
-                    mobileOpen && i === 0
-                      ? "rotate-45 translate-y-[6.5px]"
-                      : mobileOpen && i === 1
-                      ? "opacity-0"
-                      : mobileOpen && i === 2
-                      ? "-rotate-45 -translate-y-[6.5px]"
-                      : ""
+                    mobileOpen && i === 0 ? "rotate-45 translate-y-[6.5px]"
+                    : mobileOpen && i === 1 ? "opacity-0"
+                    : mobileOpen && i === 2 ? "-rotate-45 -translate-y-[6.5px]"
+                    : ""
                   }`}
                 />
               ))}
             </span>
           </button>
+
         </div>
       </div>
-
-      {/* ── Full-width mega menu panel ── */}
-      {open && activeMenu && (
-        <div
-          className="absolute top-full left-0 right-0 bg-white border-t border-gray-100"
-          style={{ boxShadow: "0 16px 40px -8px rgba(0,0,0,0.12)" }}
-          onMouseEnter={cancelClose}
-          onMouseLeave={scheduleClose}
-        >
-          <div className="max-w-screen-xl mx-auto px-8 xl:px-12 py-10">
-            {/* Items stacked vertically */}
-            <div className="flex flex-col max-w-lg">
-              {activeMenu.items.map(({ label, description, href }, idx) => (
-                <Link
-                  key={label}
-                  href={href}
-                  onClick={() => setOpen(null)}
-                  className={`group block py-5 ${
-                    idx !== activeMenu.items.length - 1
-                      ? "border-b border-gray-100"
-                      : ""
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-[15px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-150">
-                      {label}
-                    </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-x-1 group-hover:translate-x-0" />
-                  </div>
-                  <p className="text-[13.5px] text-gray-500 leading-relaxed">
-                    {description}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── Mobile panel ── */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
-          <div className="px-6 py-3">
+          <div className="px-6 py-2">
             {menus.map((menu) => (
               <div key={menu.label} className="border-b border-gray-100 last:border-0">
                 <button
                   onClick={() =>
-                    setMobileExpanded((v) =>
-                      v === menu.label ? null : menu.label
-                    )
+                    setMobileExpanded((v) => v === menu.label ? null : menu.label)
                   }
                   className="w-full flex items-center justify-between py-4 text-[14px] font-medium text-gray-700"
                 >
@@ -318,15 +310,15 @@ export default function Nav() {
                   />
                 </button>
                 {mobileExpanded === menu.label && (
-                  <div className="pb-5 space-y-5">
+                  <div className="pb-4 space-y-1">
                     {menu.items.map(({ label, description, href }) => (
                       <Link
                         key={label}
                         href={href}
                         onClick={() => setMobileOpen(false)}
-                        className="block group"
+                        className="block px-3 py-3 rounded-lg hover:bg-gray-50 group"
                       >
-                        <div className="text-[14px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">
+                        <div className="text-[13px] font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">
                           {label}
                         </div>
                         <div className="text-[12px] text-gray-500 leading-relaxed">
@@ -338,7 +330,7 @@ export default function Nav() {
                 )}
               </div>
             ))}
-            <div className="py-5 flex flex-col gap-3">
+            <div className="py-4">
               <Link
                 href="/sandbox"
                 onClick={() => setMobileOpen(false)}
